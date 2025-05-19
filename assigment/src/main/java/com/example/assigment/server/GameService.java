@@ -38,23 +38,22 @@ public class GameService {
     @Scheduled(fixedRate = 10000)
     public void runGameRound() throws IOException {
         int winningNumber = new Random().nextInt(10) + 1;
-        List<WinResult> winners = new ArrayList<>();
+        Map<String, WinResult> winners = new ConcurrentHashMap<>();
 
         for (Bet bet : bets.values()) {
             if (bet.getNumber() == winningNumber) {
                 double winnings = bet.getAmount() * 9.9;
-                winners.add(new WinResult(bet.getNickname(), winnings, bet.getUUID()));
+                winners.put(bet.getUUID(),new WinResult(bet.getNickname(), winnings));
             } else {
                 sendToPlayer(bet.getUUID(), "You lost. Winning number was: " + winningNumber);
             }
         }
 
-        for (WinResult winner : winners) {
-            sendToPlayer(winner.getUUID(), "You won: " + winner.getWin());
-            winner.setUUID(null);
+        for (Map.Entry<String, WinResult> winner : winners.entrySet()) {
+            sendToPlayer(winner.getKey(), "You won: " + winner.getValue().getWin());
         }
 
-        String winnersJson = new ObjectMapper().writeValueAsString(winners);
+        String winnersJson = new ObjectMapper().writeValueAsString(winners.values());
         broadcastAllPlayers("Winners: " + winnersJson);
 
         bets.clear();

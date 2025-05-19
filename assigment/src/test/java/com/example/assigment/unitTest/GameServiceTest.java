@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,12 +20,15 @@ public class GameServiceTest {
     void testCalculateWin() {
         Bet winBet = new Bet("player1", 5, 100);
         int winNumber = 5;
+        String uuid = UUID.randomUUID().toString();
+        winBet.setUUID(uuid);
 
-        List<WinResult> winners = calculateWin(List.of(winBet), winNumber);
+        Map<String, WinResult> winners = calculateWin(List.of(winBet), winNumber);
 
+        Map.Entry<String, WinResult> entry = winners.entrySet().iterator().next();
         assertEquals(1, winners.size());
-        assertEquals("player1", winners.getFirst().getNickname());
-        assertEquals(990.0, winners.getFirst().getWin());
+        assertEquals("player1", entry.getValue().getNickname());
+        assertEquals(990.0, entry.getValue().getWin());
     }
 
     @Test
@@ -30,7 +36,7 @@ public class GameServiceTest {
         Bet losingBet = new Bet("player1", 2,100);
         int winNumber = 5;
 
-        List<WinResult> winners = calculateWin(List.of(losingBet), winNumber);
+        Map<String, WinResult> winners = calculateWin(List.of(losingBet), winNumber);
 
         assertTrue(winners.isEmpty());
     }
@@ -48,26 +54,25 @@ public class GameServiceTest {
         bets.add(losingBet);
 
         int winNumber = 7;
-        List<WinResult> winners = calculateWin(bets,winNumber);
+        Map<String, WinResult> winners = calculateWin(bets,winNumber);
 
         assertEquals(1, winners.size());
 
-        WinResult winner = winners.get(0);
-        assertEquals("Alice", winner.getNickname());
-        assertEquals(990.0, winner.getWin(), 0.001);
+        Map.Entry<String, WinResult> entry = winners.entrySet().iterator().next();
+        assertEquals("Alice", entry.getValue().getNickname());
+        assertEquals(990.0, entry.getValue().getWin(), 0.001);
 
 
-        assertFalse(winners.stream().anyMatch(w -> w.getNickname().equals("Bob")));
+        assertFalse(winners.values().stream().anyMatch(w -> w.getNickname().equals("Bob")));
     }
 
-    public List<WinResult> calculateWin(List<Bet> bets, int winningNumber) {
-        List<WinResult> winners = new ArrayList<>();
+    public Map<String, WinResult> calculateWin(List<Bet> bets, int winningNumber) {
+        Map<String, WinResult> winners = new ConcurrentHashMap<>();
 
         for (Bet bet : bets) {
             if (bet.getNumber() == winningNumber) {
-                double win = bet.getAmount() * WIN_MULTIPLIER;
-                WinResult winner = new WinResult(bet.getNickname(), win, bet.getUUID());
-                winners.add(winner);
+                int win = (int) ((int)bet.getAmount() * WIN_MULTIPLIER);
+                winners.put(bet.getUUID(),new WinResult(bet.getNickname(), win));
             }
         }
 

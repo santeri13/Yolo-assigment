@@ -6,12 +6,12 @@ public class Bet {
     private String UUID;
     private final String nickname;
     private final int number;
-    private final int amount;
+    private final double amount;
 
     public Bet(
                @JsonProperty("nickname") String nickname,
                @JsonProperty("number") int number,
-               @JsonProperty("amount") int amount){
+               @JsonProperty("amount") double amount){
         this.nickname = nickname;
         this.number = number;
         this.amount = amount;
@@ -25,7 +25,7 @@ public class Bet {
         return number;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
