@@ -14,11 +14,12 @@ WebSocket(without STOMP)
 When the application works, the user can connect to the application and guess the right number with a bet on it. If the user guesses the number, he receives a message about his win and his bet back with a winnings of 9.9 times the stake. Results of the match will be shown to all users connected to it, as well as the guess number.
 
 Application consists of:
-1)Two constructions, bet which person place and win result of the bet, which includes information about the winner's result. 
-2)backend code for calculating the results of the match
-3) configuration of WebSocket without using STOMP
-4)validator to check if the received data from the user is right
-5)tests to check the proper work of the application (unit test, integration test, rtp)
+
+1. Two constructions, bet which person place and win result of the bet, which includes information about the winner's result. 
+2. Backend code for calculating the results of the match
+3. Configuration of WebSocket without using STOMP
+4. Validator to check if the received data from the user is right
+5. Tests to check the proper work of the application (unit test, integration test, rtp)
 
 ### Constructures
 Bet structure parameters:
