@@ -39,11 +39,11 @@ public class GameServiceTest {
     void testTwoPlayerBets() {
         List<Bet> bets = new ArrayList<>();
 
-        Bet winBet = new Bet("Alice", 7, 100.0);
+        Bet winBet = new Bet("Alice", 7, 100);
         winBet.setUUID("uuid-1");
         bets.add(winBet);
 
-        Bet losingBet = new Bet("Bob", 3, 50.0);
+        Bet losingBet = new Bet("Bob", 3, 50);
         losingBet.setUUID("uuid-2");
         bets.add(losingBet);
 
